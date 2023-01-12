@@ -1,0 +1,57 @@
+pipeline {
+    agent any
+    parameters {
+        choice(name: 'Helm_Action', choices: ['Install/Upgrade deployment', 'UnInstall Deployment'], description: 'Helm action to perform')
+        string(name: 'APP_Name', defaultValue: 'my-app-avi')
+        string(name: 'K8s_NAMESPACE', defaultValue: 'avi')
+    }
+    environment {
+        VAR1=""
+        VAR2=""
+    }
+    stages {
+        stage ('Setup Environment') {
+            steps {
+                script {
+                    echo "Setting kube config for this run"
+                    sh '''
+					export KUBECONFIG=/var/lib/jenkins/.kube/config
+					kubelogin convert-kubeconfig -l msi
+                    '''
+                }    
+            }
+       }    
+        stage ('Test kubectl/Helm commands') {
+            steps {
+                sh "kubectl get pods -A"
+                sh "helm list -n avi"
+            }
+        }
+        stage ('Clone repo') {
+            steps {
+                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '**']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/ush61413/task1.git']]]
+            }
+        }
+        stage ('Helm Opearations') {
+			steps{
+				script {
+					echo "Route..."
+					switch(params.Helm_Action) {
+					    case "Install/Upgrade deployment" : HelmDeploy(params.APP_Name, PARAMS.K8s_NAMESPACE) ; break
+					    case "UnInstall Deployment" : HelmUninstall(params.APP_Name, K8s_NAMESPACE) ; break
+					}
+				}
+			}
+        }        
+    }
+}
+
+def HelmDeploy(APP_Name,NAMESPACE) {
+    echo "Starting Deploy App ${APP_Name}"
+    sh "ls -l"
+}
+
+def HelmUninstall(APP_Name,NAMESPACE) {
+    echo "About to Uninstall App ${APP_Name}"
+    sh "helm uninstall -n ${NAMESPACE} ${APP_Name}"
+}
