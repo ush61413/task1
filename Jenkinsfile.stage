@@ -63,7 +63,6 @@ def HelmDeploy(APP_Name,APP_Version,NAMESPACE) {
 }
 
 def HelmLint(APP_Name) {
-    echo "Starting Deploy App ${APP_Name} in ${NAMESPACE} NameSpace"
     catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
                     sh "helm lint ${APP_Name}"
     }   
