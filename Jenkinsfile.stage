@@ -43,7 +43,7 @@ pipeline {
 				expression { (params.Helm_Action == 'Install/Upgrade deployment') }
 			} 
             steps {
-                HelmLint(params.APP_Name, params.APP_Version, params.K8s_NAMESPACE)
+                HelmLint(params.APP_Name)
             }
         }
         stage ('Install') {
