@@ -1,0 +1,24 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {{ include "my-app-avi.name" . }}
+spec:
+  maxReplicaCount: 2
+  minReplicaCount: 1
+  scaleTargetRef:
+    name: {{ include "my-app-avi.name" . }}
+  triggers:
+  - type: cron
+    metadata:
+      timezone: America/New_York  # The acceptable values would be a value from the IANA Time Zone Database.
+      start: 0 8 * * *       # Every hour on the 30th minute
+      end: 0 12 * * *         # Every hour on the 45th minute
+      desiredReplicas: "2"          
+  - type: cpu
+    metadata:
+      type: Utilization 
+      value: "50"
+  - type: memory
+    metadata:
+      type: Utilization
+      value: "75"      
