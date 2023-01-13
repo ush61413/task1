@@ -46,7 +46,8 @@ pipeline {
                 HelmDeploy(params.APP_Name, params.APP_Version, params.K8s_NAMESPACE)
             }
         }
-
+	}
+}
 
 def HelmDeploy(APP_Name,APP_Version,NAMESPACE) {
     echo "Starting Deploy App ${APP_Name} in ${NAMESPACE} NameSpace"
