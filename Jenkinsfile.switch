@@ -22,11 +22,6 @@ pipeline {
                 }    
             }
        }    
-//        stage ('Clone repo') {
-//            steps {
-//                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '**']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/ush61413/task1.git']]]
-//            }
-//        }
         stage ('Helm Opearations') {
 			steps{
 				script {
